@@ -27,12 +27,9 @@ from tests.ethereumetl.job.mock_web3_provider import MockWeb3Provider, build_fil
 
 
 class MockBatchWeb3Provider(MockWeb3Provider):
-
-    def __init__(self, read_resource):
-        super().__init__(read_resource)
-        self.read_resource = read_resource
-
+    
     def make_batch_request(self, text):
+        print(text)
         batch = json.loads(text)
         web3_response = []
         for req in batch:

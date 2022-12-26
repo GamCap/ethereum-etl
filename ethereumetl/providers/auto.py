@@ -31,7 +31,7 @@ from ethereumetl.providers.rpc import BatchHTTPProvider
 DEFAULT_TIMEOUT = 60
 
 
-def get_provider_from_uri(uri_string, timeout=DEFAULT_TIMEOUT, batch=False):
+def get_provider_from_uri(uri_string, timeout=DEFAULT_TIMEOUT, batch=False, disable_by_default=False):
     uri = urlparse(uri_string)
     if uri.scheme == 'file':
         if batch:
@@ -41,7 +41,7 @@ def get_provider_from_uri(uri_string, timeout=DEFAULT_TIMEOUT, batch=False):
     elif uri.scheme == 'http' or uri.scheme == 'https':
         request_kwargs = {'timeout': timeout}
         if batch:
-            return BatchHTTPProvider(uri_string, request_kwargs=request_kwargs)
+            return BatchHTTPProvider(uri_string, request_kwargs=request_kwargs, disable_by_default=disable_by_default)
         else:
             return HTTPProvider(uri_string, request_kwargs=request_kwargs)
     else:

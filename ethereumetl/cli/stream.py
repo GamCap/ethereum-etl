@@ -45,7 +45,7 @@ from ethereumetl.thread_local_proxy import ThreadLocalProxy
                    'or Kinesis, e.g. kinesis://your-data-stream-name'
                    'If not specified will print to console')
 @click.option('-s', '--start-block', default=12287507, show_default=True, type=int, help='Start block')
-@click.option('-e', '--entity-types', default=','.join(EntityType.ALL_FOR_INFURA), show_default=True, type=str,
+@click.option('-e', '--entity-types', default=','.join(EntityType.ETL_STANDARD), show_default=True, type=str,
               help='The list of entity types to export.')
 @click.option('--period-seconds', default=10, show_default=True, type=int, help='How many seconds to sleep between syncs')
 @click.option('-b', '--batch-size', default=10, show_default=True, type=int, help='How many blocks to batch in single request')
@@ -68,7 +68,7 @@ def stream(last_synced_block_file, lag, provider_uri, output, start_block, entit
     logging.info('Using ' + provider_uri)
 
     streamer_adapter = EthStreamerAdapter(
-        batch_web3_provider=ThreadLocalProxy(lambda: get_provider_from_uri(provider_uri, batch=True)),
+        batch_web3_provider=ThreadLocalProxy(lambda: get_provider_from_uri(provider_uri,batch=True, disable_by_default=True)),
         item_exporter=create_item_exporters(output),
         batch_size=batch_size,
         max_workers=max_workers,

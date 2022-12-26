@@ -23,15 +23,22 @@
 
 from web3 import HTTPProvider
 from web3._utils.request import make_post_request
-
+import json
+import requests
 
 # Mostly copied from web3.py/providers/rpc.py. Supports batch requests.
 # Will be removed once batch feature is added to web3.py https://github.com/ethereum/web3.py/issues/832
 class BatchHTTPProvider(HTTPProvider):
+    def __init__(self, uri_string, request_kwargs, disable_by_default=False):
+        super().__init__(uri_string, request_kwargs)
+        self.disable_by_default = disable_by_default
 
     def make_batch_request(self, text):
         self.logger.debug("Making request HTTP. URI: %s, Request: %s",
-                          self.endpoint_uri, text)
+                        self.endpoint_uri, text)
+
+        if self.disable_by_default:
+            text = text[1:-1]
         request_data = text.encode('utf-8')
         raw_response = make_post_request(
             self.endpoint_uri,
@@ -40,6 +47,6 @@ class BatchHTTPProvider(HTTPProvider):
         )
         response = self.decode_rpc_response(raw_response)
         self.logger.debug("Getting response HTTP. URI: %s, "
-                          "Request: %s, Response: %s",
-                          self.endpoint_uri, text, response)
+                        "Request: %s, Response: %s",
+                        self.endpoint_uri, text, response)
         return response
